@@ -1,0 +1,39 @@
+name: Vmess Daily API Trigger
+
+on:
+  schedule:
+    # 09:00 WIB (02:00 UTC)
+    - cron: '0 2 * * *'
+    # 18:00 WIB (11:00 UTC)
+    - cron: '0 11 * * *'
+  workflow_dispatch: # Biar bisa dijalankan manual juga
+
+jobs:
+  call-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine Action (freeze or unfreeze)
+        id: set_action
+        run: |
+          HOUR=$(date -u +"%H")
+          if [ "$HOUR" -eq "2" ]; then
+            echo "action=unfreeze" >> $GITHUB_OUTPUT
+          elif [ "$HOUR" -eq "11" ]; then
+            echo "action=freeze" >> $GITHUB_OUTPUT
+          else
+            echo "Invalid schedule time"
+            exit 1
+          fi
+
+      - name: Call Vmess API
+        run: |
+          if [ "${{ steps.set_action.outputs.action }}" == "unfreeze" ]; then
+            URL="https://sahabatssh.com/service/vmess_hourly/unfreeze?get_id=2936"
+          else
+            URL="https://sahabatssh.com/service/vmess_hourly/freeze?get_id=2936"
+          fi
+
+          curl -X POST "$URL" \
+            -H "Cookie: ${{ secrets.USER_COOKIE }}" \
+            -H "User-Agent: Mozilla/5.0" \
+            -H "Accept: */*"
