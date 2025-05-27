@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Sending POST to unfreeze
         run: |
-          curl -X POST "https://sahabatssh.com/service/vmess_hourly/unfreeze?get_id=2936" \
+          curl -X POST "https://sahabatssh.com/service/vmess_hourly/freeze?get_id=2936" \
           -H "Cookie: ${{ secrets.USER_COOKIE }}" \
           -H "User-Agent: Mozilla/5.0" \
           -v
