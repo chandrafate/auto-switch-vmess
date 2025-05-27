@@ -1,0 +1,15 @@
+name: Test Vmess API Call
+
+on:
+  workflow_dispatch:  # Bisa dijalankan manual lewat tab Actions
+
+jobs:
+  send-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sending POST to unfreeze
+        run: |
+          curl -X POST "https://sahabatssh.com/service/vmess_hourly/unfreeze?get_id=2936" \
+          -H "Cookie: ${{ secrets.USER_COOKIE }}" \
+          -H "User-Agent: Mozilla/5.0" \
+          -v
